@@ -1,0 +1,10 @@
+- `[x]` Create styles.css with design tokens, glassmorphic panels, and glowing micro-animations
+- `[x]` Create app.js with the core state, prioritization formulas, scheduling assistant, voice transcription, and bento tracker logic
+- `[x]` Create index.html wrapping the sidebar, top header, and five main tabs (Dashboard, Kanban, Calendar, Goals, and AI Chat)
+- `[x]` Implement local storage synchronization to persist state across refreshes
+- `[x]` Verify prioritized task heatmaps and the Morning AI briefing card
+- `[x]` Verify dynamic "Auto-schedule" logic and conflict resolution suggestions
+- `[x]` Verify Voice Assistant triggers (Text-to-Speech and Speech-to-Text)
+- `[x]` Verify Habit tracking, streaks, and failure check-in prompts
+- `[x]` Verify Autonomous task breakdown for high-level goals
+- `[x]` Verify email/calendar parsing from pasted subjects and bodies
