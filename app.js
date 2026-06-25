@@ -984,5 +984,124 @@ function showNotification(msg, type = "success") {
     }, 4000);
 }
 
+// --- ANALYTICS AND CO-PILOT EXTENSIONS ---
+
+function renderAnalytics() {
+    const procList = document.getElementById("procrastination-list");
+    if (!procList) return;
+    
+    // Filter tasks that have procrastination flags
+    const delayedTasks = state.tasks.filter(t => t.procrastinationCount > 0 && t.status !== 'done');
+    
+    let html = "";
+    delayedTasks.forEach(t => {
+        html += `
+            <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/30 space-y-2 mb-2">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold text-on-surface truncate pr-2 w-44 block">${t.title}</span>
+                    <span class="text-[9px] bg-tertiary-container/20 text-tertiary px-1.5 py-0.5 rounded font-extrabold uppercase">${t.procrastinationCount}x delayed</span>
+                </div>
+                <div class="flex gap-2">
+                    <button class="flex-1 py-1.5 bg-surface-container-highest text-primary font-bold rounded-lg text-[10px] hover:text-primary-fixed active:scale-95 transition-all" onclick="reframeTask('${t.id}')">Reframe</button>
+                    <button class="flex-1 py-1.5 bg-surface-container-highest text-on-surface-variant hover:text-on-surface rounded-lg text-[10px] active:scale-95 transition-all" onclick="delegateTask('${t.id}')">Delegate</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    procList.innerHTML = html || `<p class="text-xs text-on-surface-variant text-center py-6">All clear! No delayed tasks detected.</p>`;
+}
+
+function reframeTask(id) {
+    const task = state.tasks.find(t => t.id === id);
+    if (!task) return;
+    
+    let motivation = "";
+    if (task.category === "Finance") {
+        motivation = `Instead of thinking about complex tax forms, Aryan, focus on the five hundred dollar late fee you are saving by completing this today. It only takes twenty minutes to start, and you will feel a massive weight off your shoulders!`;
+    } else if (task.category === "Strategic" || task.category === "Product") {
+        motivation = `You have delayed this pitch deck review because it feels huge. Let's break it down: just read the first three slides today. That takes five minutes, and you can stop immediately after. Starting is the only hard part!`;
+    } else {
+        motivation = `Aryan, delaying this task only prolongs the background anxiety it is causing you. Let's block a short fifteen-minute focus window right now to make a quick start. Let's do it!`;
+    }
+    
+    speakAI(motivation);
+    
+    // Show alert popup
+    createReminderToast("AI Co-pilot Reframing Advice", motivation, "Start 15m Focus Block", "urgent", () => {
+        startPomodoroTimer(15 * 60, `Start: ${task.title}`);
+    });
+}
+
+function delegateTask(id) {
+    const taskIndex = state.tasks.findIndex(t => t.id === id);
+    if (taskIndex === -1) return;
+    
+    const delegatee = Math.random() > 0.5 ? "Sarah" : "JD";
+    state.tasks[taskIndex].assignedTo = delegatee;
+    state.tasks[taskIndex].category = "Delegated (" + state.tasks[taskIndex].category + ")";
+    state.tasks[taskIndex].procrastinationCount = 0; // reset counter
+    saveState();
+    
+    showNotification(`Task delegated to ${delegatee}!`, "success");
+    speakAI(`I have successfully delegated this task to ${delegatee} to keep your schedule clear for core focus items.`);
+    
+    if (window.renderDashboard) window.renderDashboard();
+    if (window.renderTasksBoard) window.renderTasksBoard();
+    renderAnalytics();
+}
+
+function triggerTemplateAutoPrep(type) {
+    let prepTasks = [];
+    if (type === 'exam') {
+        prepTasks = [
+            { title: "Revise Syllabus notes & mark key chapters", leadDays: 5, effort: 1.5, urgency: 7 },
+            { title: "Solve practice exam questions & double check answers", leadDays: 3, effort: 2, urgency: 8 },
+            { title: "Read formula summary card & final cheat sheet review", leadDays: 1, effort: 1, urgency: 9 }
+        ];
+        speakAI("Activated University Exam Prep template. I've scheduled three preparatory tasks starting five days in advance.");
+    } else if (type === 'tax') {
+        prepTasks = [
+            { title: "Collect all receipts, W2 statements, and ledger summaries", leadDays: 7, effort: 2.5, urgency: 6 },
+            { title: "Verify transaction categories inside spreadsheet", leadDays: 4, effort: 2, urgency: 7 },
+            { title: "Perform final tax document accuracy inspection", leadDays: 2, effort: 1.5, urgency: 8 }
+        ];
+        speakAI("Activated Corporate Tax Filing template. I've scheduled three preparatory tasks starting seven days in advance.");
+    } else {
+        prepTasks = [
+            { title: "Verify rental funds allocation inside checking account", leadDays: 3, effort: 0.5, urgency: 7 },
+            { title: "Process rent wire transfer and send receipt to landlord", leadDays: 1, effort: 0.5, urgency: 9 }
+        ];
+        speakAI("Activated Monthly Rent Invoice template. I've scheduled two preparatory tasks starting three days in advance.");
+    }
+    
+    prepTasks.forEach((pt, idx) => {
+        const task = {
+            id: `task-prep-${Date.now()}-${idx}`,
+            title: `Prep: ${pt.title}`,
+            category: type.charAt(0).toUpperCase() + type.slice(1) + " Prep",
+            urgency: pt.urgency,
+            impact: 7,
+            effort: Math.ceil(pt.effort * 2),
+            dependencies: idx > 0 ? 2 : 1,
+            status: "todo",
+            dueDate: `In ${pt.leadDays} days`,
+            estimatedHours: pt.effort,
+            assignedTo: "Self",
+            procrastinationCount: 0,
+            isUnscheduled: true
+        };
+        state.tasks.push(task);
+    });
+    
+    saveState();
+    showNotification(`Added preparatory tasks for ${type}!`, "success");
+    
+    if (window.renderDashboard) window.renderDashboard();
+    if (window.renderTasksBoard) window.renderTasksBoard();
+    if (window.renderCalendar) window.renderCalendar();
+}
+
 // Initial state loading on file load
 loadState();
+
