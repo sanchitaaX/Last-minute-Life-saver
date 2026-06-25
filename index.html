@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -21,53 +21,53 @@
             theme: {
                 extend: {
                     colors: {
-                        "surface-container-highest": "#dcdbe6",
-                        "primary-fixed": "#e8e3ff",
-                        "error": "#ba1a1a",
-                        "on-secondary-fixed-variant": "#5e5773",
-                        "on-background": "#1c1a24",
-                        "tertiary-fixed": "#ffdbcc",
-                        "surface-tint": "#5e35f1",
-                        "primary-fixed-dim": "#5e35f1",
-                        "on-primary-fixed": "#1c0087",
-                        "secondary-fixed-dim": "#5e5773",
-                        "on-tertiary": "#ffffff",
-                        "on-tertiary-fixed-variant": "#8a3c00",
-                        "surface-dim": "#f5f3fa",
-                        "outline-variant": "#c9c5d8",
-                        "on-tertiary-container": "#2c0e00",
-                        "tertiary": "#b34d00",
-                        "primary": "#5e35f1",
-                        "inverse-primary": "#c9beff",
-                        "on-surface-variant": "#5f5b70",
-                        "tertiary-fixed-dim": "#b34d00",
-                        "on-error-container": "#410002",
-                        "error-container": "#ffdad6",
-                        "on-primary-container": "#1c0087",
-                        "on-secondary-container": "#1a162a",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container-low": "#f8f7fc",
-                        "on-primary-fixed-variant": "#1c0087",
-                        "on-secondary": "#ffffff",
-                        "surface-variant": "#eeeef6",
-                        "secondary-container": "#e2def6",
-                        "tertiary-container": "#ffdbcc",
-                        "on-tertiary-fixed": "#2c0e00",
-                        "inverse-on-surface": "#e6e0ef",
-                        "primary-container": "#e8e3ff",
-                        "inverse-surface": "#1c1a24",
-                        "surface": "#ffffff",
-                        "surface-container-high": "#e5e4ee",
-                        "on-error": "#ffffff",
-                        "surface-container": "#eeeef6",
-                        "on-surface": "#1c1a24",
-                        "secondary-fixed": "#e2def6",
-                        "on-secondary-fixed": "#1a162a",
-                        "on-primary": "#ffffff",
-                        "surface-bright": "#ffffff",
-                        "secondary": "#5e5773",
-                        "background": "#f5f3fa",
-                        "outline": "#787486"
+                        "surface-container-highest": "#36333e",
+                        "primary-fixed": "#e6deff",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#43455c",
+                        "on-background": "#e6e0ef",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-tint": "#c9beff",
+                        "primary-fixed-dim": "#c9beff",
+                        "on-primary-fixed": "#1b0063",
+                        "secondary-fixed-dim": "#c4c4e1",
+                        "on-tertiary": "#552100",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-dim": "#14121c",
+                        "outline-variant": "#484556",
+                        "on-tertiary-container": "#ffeae1",
+                        "tertiary": "#ffb691",
+                        "primary": "#c9beff",
+                        "inverse-primary": "#5e35f1",
+                        "on-surface-variant": "#c9c3d9",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "on-primary-container": "#f1ebff",
+                        "on-secondary-container": "#b6b6d2",
+                        "surface-container-lowest": "#0e0d17",
+                        "surface-container-low": "#1c1a25",
+                        "on-primary-fixed-variant": "#4500d8",
+                        "on-secondary": "#2d2f45",
+                        "surface-variant": "#36333e",
+                        "secondary-container": "#46475f",
+                        "tertiary-container": "#b34d00",
+                        "on-tertiary-fixed": "#341100",
+                        "inverse-on-surface": "#312f3a",
+                        "primary-container": "#6c47ff",
+                        "inverse-surface": "#e6e0ef",
+                        "surface": "#14121c",
+                        "surface-container-high": "#2b2933",
+                        "on-error": "#690005",
+                        "surface-container": "#201e29",
+                        "on-surface": "#e6e0ef",
+                        "secondary-fixed": "#e0e0fe",
+                        "on-secondary-fixed": "#181a2f",
+                        "on-primary": "#2f009b",
+                        "surface-bright": "#3a3843",
+                        "secondary": "#c4c4e1",
+                        "background": "#14121c",
+                        "outline": "#938ea2"
                     },
                     borderRadius: {
                         "DEFAULT": "0.25rem",
@@ -1412,7 +1412,7 @@
                 startHour: 11,
                 durationHours: Math.ceil(task.estimatedHours || 1),
                 day: "Mon",
-                colorClass: "bg-primary/10 border-primary/40 text-primary ai-sparkle-glow",
+                colorClass: "bg-primary-container/20 border-primary/40 text-primary ai-sparkle-glow",
                 taskId: task.id
             };
             
@@ -1669,7 +1669,7 @@
                 startHour: startHour,
                 durationHours: duration,
                 day: "Mon",
-                colorClass: "bg-primary/10 border-primary/40 text-primary ai-sparkle-glow",
+                colorClass: "bg-primary-container/20 border-primary/40 text-primary ai-sparkle-glow",
                 taskId: task.id
             };
             state.calendarEvents.push(newEvent);
@@ -1714,13 +1714,13 @@
                 if (index !== -1) {
                     state.calendarEvents[index].timeLabel = "4:30 PM - 5:30 PM";
                     state.calendarEvents[index].startHour = 16.5;
-                    state.calendarEvents[index].colorClass = "bg-secondary/10 border-secondary text-secondary";
+                    state.calendarEvents[index].colorClass = "bg-secondary-container/20 border-secondary text-secondary-fixed";
                 }
                 
                 // Clear conflict class on the double book event
                 const clientIndex = state.calendarEvents.findIndex(e => e.title.includes("Client Presentation"));
                 if (clientIndex !== -1) {
-                    state.calendarEvents[clientIndex].colorClass = "bg-blue-500/10 border-blue-500 text-blue-700";
+                    state.calendarEvents[clientIndex].colorClass = "bg-blue-500/20 border-blue-500 text-blue-200";
                 }
                 
                 showNotification("Internal Strategy rescheduled to 4:30 PM. Conflicting resolved!", "success");
@@ -1729,11 +1729,11 @@
                 const idx = state.calendarEvents.findIndex(e => e.title.includes("Internal Strategy"));
                 if (idx !== -1) {
                     state.calendarEvents[idx].title = "AI Deputy attending: Strategy";
-                    state.calendarEvents[idx].colorClass = "bg-primary/10 border-primary/40 text-primary ai-sparkle-glow";
+                    state.calendarEvents[idx].colorClass = "bg-primary-container/20 border-primary/50 text-primary-fixed ai-sparkle-glow";
                 }
                 const clientIdx = state.calendarEvents.findIndex(e => e.title.includes("Client Presentation"));
                 if (clientIdx !== -1) {
-                    state.calendarEvents[clientIdx].colorClass = "bg-blue-500/10 border-blue-500 text-blue-700";
+                    state.calendarEvents[clientIdx].colorClass = "bg-blue-500/20 border-blue-500 text-blue-200";
                 }
                 showNotification("AI Deputy assigned. Transcript summary will arrive post-meeting.", "success");
             }
