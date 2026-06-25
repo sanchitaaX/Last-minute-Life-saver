@@ -81,3 +81,9 @@ To run and verify the MVP, open [index.html](file:///c:/Users/Admin/Documents/Pr
 ### 💡 11. Interactive AI Suggestion Clicks
 - **Briefing Apply:** In the Morning Briefing Card on the Dashboard, the slot recommendation item now contains a clickable **"Apply"** button.
 - **Reactive Update:** Click **"Apply"** to schedule "Review Q4 Revenue Report" at 11 AM with a buffer break. The recommendation instantly transforms into a green checkmark indicating successful scheduling, and the calendar updates in real time.
+
+### 🚪 12. Premium Onboarding & Sign-In Screen
+- **First Launch:** Fresh visitors are met with a beautifully styled glassmorphic sign-in page before accessing the dashboard.
+- **Personalization Form:** Type in your Name, select your Peak Productivity Hours range, and input your primary Focus/Motto of the day.
+- **Co-Pilot Welcome:** Clicking **"Initialize Co-Pilot"** stores the configuration in `localStorage`, slides away the sign-in screen, and triggers a dynamic text-to-speech AI welcome briefing using your custom name!
+- **Testing/Reset Option:** Inside the left sidebar navigation, click **"Reset Co-Pilot"** to log out and re-trigger the onboarding screen instantly to try out different profile names.
