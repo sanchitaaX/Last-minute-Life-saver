@@ -188,7 +188,7 @@ const initialSeedData = {
             startHour: 10,
             durationHours: 1,
             day: "Mon",
-            colorClass: "bg-blue-500/20 border-blue-500 text-blue-200"
+            colorClass: "bg-blue-500/10 border-blue-500 text-blue-700"
         },
         {
             id: "evt-2",
@@ -198,7 +198,7 @@ const initialSeedData = {
             startHour: 11,
             durationHours: 2,
             day: "Wed",
-            colorClass: "bg-primary-container/20 border-primary/40 text-primary ai-sparkle-glow"
+            colorClass: "bg-primary/10 border-primary/40 text-primary ai-sparkle-glow"
         },
         {
             id: "evt-3",
@@ -208,7 +208,7 @@ const initialSeedData = {
             startHour: 14,
             durationHours: 1.5,
             day: "Mon",
-            colorClass: "bg-tertiary-container/20 border-tertiary text-tertiary-fixed"
+            colorClass: "bg-orange-500/10 border-orange-500/40 text-orange-700"
         },
         {
             id: "evt-4",
@@ -218,7 +218,7 @@ const initialSeedData = {
             startHour: 14,
             durationHours: 1,
             day: "Thu",
-            colorClass: "bg-error-container/10 border-error border-2 border-dashed text-error"
+            colorClass: "bg-red-500/10 border-error border-2 border-dashed text-error"
         },
         {
             id: "evt-5",
@@ -228,7 +228,7 @@ const initialSeedData = {
             startHour: 14,
             durationHours: 1,
             day: "Thu",
-            colorClass: "bg-error-container/10 border-error border-2 border-dashed text-error"
+            colorClass: "bg-red-500/10 border-error border-2 border-dashed text-error"
         }
     ],
     habits: [
@@ -451,7 +451,7 @@ function autoScheduleAllTasks() {
                 startHour: foundStartHour,
                 durationHours: taskDuration,
                 day: today,
-                colorClass: "bg-primary-container/20 border-primary/40 text-primary ai-sparkle-glow",
+                colorClass: "bg-primary/10 border-primary/40 text-primary ai-sparkle-glow",
                 taskId: task.id
             };
             
