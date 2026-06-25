@@ -68,3 +68,16 @@ To run and verify the MVP, open [index.html](file:///c:/Users/Admin/Documents/Pr
 - **Procrastination Reframer:** Delayed tasks are listed under "Procrastination Reframing". Click **"Reframe"** to hear the co-pilot speak a customized motivation script (utilizing speech synthesis) and trigger a Pomodoro focus overlay. Or click **"Delegate"** to auto-reassign the task to a teammate (Sarah or JD) and update the boards.
 - **Auto-Prep Templates:** Under "Auto-Prep Templates", click **"Activate"** next to University Exam Prep, Corporate Tax Filing, or Monthly Rent Invoice. The AI Co-pilot immediately generates structured preparatory subtasks scheduled N days in advance in the task manager and calendar.
 
+### 🎯 9. AI Target Next Clear Action Banner
+- **What to check:** The Dashboard tab now features a dynamic banner displaying your single most critical pending task (e.g. "Finalize Tax Filings 2023") and the AI rationale behind it.
+- **Timer Integration:** Click **"Start Focus Session"** to trigger a 25-minute Pomodoro focus block overlay immediately.
+- **Skip Action:** Click **"Skip"** to dismiss the current task from the recommendation card, dynamically sliding in the next critical task.
+
+### ☕ 10. Automated Buffer/Break Injection
+- **What to check:** Trigger **"Auto-schedule my day"** on the Dashboard or Calendar tab. 
+- **Buffer slots:** The AI Scheduling Assistant now automatically injects a 15-minute **"Coffee Break / Buffer"** event immediately after each scheduled task block.
+- **Compact Rendering:** Open the Calendar tab. Notice that breaks are rendered in a sleek, compact single-line layout (with a coffee icon) to perfectly fit the 15-minute slot without any vertical overflow.
+
+### 💡 11. Interactive AI Suggestion Clicks
+- **Briefing Apply:** In the Morning Briefing Card on the Dashboard, the slot recommendation item now contains a clickable **"Apply"** button.
+- **Reactive Update:** Click **"Apply"** to schedule "Review Q4 Revenue Report" at 11 AM with a buffer break. The recommendation instantly transforms into a green checkmark indicating successful scheduling, and the calendar updates in real time.

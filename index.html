@@ -230,6 +230,29 @@
                         </div>
                     </div>
                     
+                    <!-- AI Target Next Clear Action Banner -->
+                    <div id="ai-target-next-card" class="glass-panel rounded-2xl p-5 border border-primary/20 bg-primary/5 relative overflow-hidden hidden mb-6">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent pointer-events-none"></div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-sm font-bold animate-pulse">radar</span>
+                                    <span class="text-[10px] text-primary font-bold uppercase tracking-wider">AI Recommended Next Target</span>
+                                </div>
+                                <h3 id="target-task-title" class="text-sm font-bold text-on-surface">No tasks pending</h3>
+                                <p id="target-task-reason" class="text-[11px] text-on-surface-variant">Your list is clear. Good job!</p>
+                            </div>
+                            <div class="flex gap-2.5 w-full sm:w-auto">
+                                <button id="target-task-btn" class="flex-1 sm:flex-none bg-primary text-on-primary px-4 py-2 rounded-xl font-bold text-[11px] hover:brightness-110 active:scale-95 transition-all shadow-md flex items-center justify-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">timer</span> Start Focus Session
+                                </button>
+                                <button id="target-task-dismiss" class="px-3 py-2 bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-xl font-bold text-[11px] transition-colors" onclick="dismissTargetTask()">
+                                    Skip
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Priority Tasks Table (Urgency heatmap) -->
                     <div class="glass-panel rounded-2xl flex flex-col h-[500px]">
                         <div class="p-6 border-b border-outline-variant">
@@ -982,12 +1005,29 @@
                 }
 
                 // Add a proactive slot gap advice
-                briefingHTML += `
-                    <li class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-primary mt-0.5">lightbulb</span>
-                        <span>I found a 45-minute gap at 11:00 AM. I recommend scheduling your "Review Q4 Revenue Report" there.</span>
-                    </li>
-                `;
+                const targetTask = state.tasks.find(t => t.title === "Review Q4 Revenue Report");
+                const isTaskUnscheduled = targetTask ? targetTask.isUnscheduled : true;
+                
+                if (isTaskUnscheduled) {
+                    briefingHTML += `
+                        <li class="flex items-start gap-3 justify-between w-full">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-primary mt-0.5">lightbulb</span>
+                                <span>I found a 45-minute gap at 11:00 AM. I recommend scheduling your "Review Q4 Revenue Report" there.</span>
+                            </div>
+                            <button class="text-primary text-xs font-bold hover:underline shrink-0 ml-4" onclick="applyBriefingRecommendation('Review Q4 Revenue Report', 11, 0.75)">
+                                Apply
+                            </button>
+                        </li>
+                    `;
+                } else {
+                    briefingHTML += `
+                        <li class="flex items-start gap-3 text-green-400">
+                            <span class="material-symbols-outlined mt-0.5">check_circle</span>
+                            <span>"Review Q4 Revenue Report" is successfully scheduled in your morning gap!</span>
+                        </li>
+                    `;
+                }
                 
                 // Add motivation note
                 briefingHTML += `
@@ -998,6 +1038,46 @@
                 `;
 
                 briefingList.innerHTML = briefingHTML;
+            }
+
+            // 1b. AI Target Next Card populator
+            const targetCard = document.getElementById("ai-target-next-card");
+            if (targetCard) {
+                const pendingTasks = getSortedTasks().filter(t => t.status !== 'done');
+                let criticalTask = null;
+                if (pendingTasks.length > 0) {
+                    if (state.skippedTargetTaskId && pendingTasks[0].id === state.skippedTargetTaskId) {
+                        criticalTask = pendingTasks[1] || null;
+                    } else {
+                        criticalTask = pendingTasks[0];
+                    }
+                }
+                
+                if (criticalTask) {
+                    targetCard.classList.remove("hidden");
+                    const titleEl = document.getElementById("target-task-title");
+                    const reasonEl = document.getElementById("target-task-reason");
+                    const btnEl = document.getElementById("target-task-btn");
+                    
+                    titleEl.innerText = criticalTask.title;
+                    
+                    let reason = "";
+                    if (criticalTask.isOverdue) {
+                        reason = `Overdue by ${criticalTask.overdueHours} hours. Immediate focus required.`;
+                    } else if (criticalTask.score >= 75) {
+                        reason = `High priority score of ${Math.round(criticalTask.score)}. Best solved during your peak focus hours.`;
+                    } else {
+                        reason = `Dynamic score: ${Math.round(criticalTask.score)}. Keep momentum up by locking this in.`;
+                    }
+                    reasonEl.innerText = reason;
+                    
+                    btnEl.onclick = () => {
+                        // Start a 25-minute Pomodoro timer (1500 seconds)
+                        startPomodoroTimer(25 * 60, criticalTask.title);
+                    };
+                } else {
+                    targetCard.classList.add("hidden");
+                }
             }
 
             // 2. Priority task heat-map
@@ -1249,25 +1329,35 @@
                     const onClickAttr = isConflict ? `onclick="openConflictModal()"` : `onclick="showNotification('Event: ${evt.title} - ${evt.timeLabel}', 'info')"`;
                     
                     const element = document.createElement("div");
-                    element.className = `absolute p-2.5 rounded-lg group cursor-pointer hover:brightness-110 active:scale-98 transition-all z-10 border-l-4 ${evt.colorClass}`;
                     element.style.left = `${offsetLeft + 1}%`;
                     element.style.width = `18%`;
                     element.style.top = `${topPos}px`;
                     element.style.height = `${heightPos - 2}px`;
                     element.setAttribute("onclick", isConflict ? `openConflictModal()` : `showNotification('Event: ${evt.title}', 'info')`);
                     
-                    let sparkleIcon = "";
-                    if (evt.type === 'focus') {
-                        sparkleIcon = `<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>`;
+                    if (evt.type === 'break') {
+                        element.className = `absolute px-2 rounded-md group cursor-pointer hover:brightness-110 active:scale-98 transition-all z-10 border-l-2 text-[9px] flex items-center justify-between overflow-hidden ${evt.colorClass}`;
+                        element.innerHTML = `
+                            <div class="font-extrabold truncate text-on-surface-variant/80 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[10px] text-on-surface-variant/60">coffee</span>
+                                ${evt.title}
+                            </div>
+                            <div class="text-[8px] opacity-70 font-medium">${evt.timeLabel}</div>
+                        `;
+                    } else {
+                        element.className = `absolute p-2.5 rounded-lg group cursor-pointer hover:brightness-110 active:scale-98 transition-all z-10 border-l-4 ${evt.colorClass}`;
+                        let sparkleIcon = "";
+                        if (evt.type === 'focus') {
+                            sparkleIcon = `<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>`;
+                        }
+                        element.innerHTML = `
+                            <div class="flex justify-between items-start leading-none mb-1">
+                                <div class="text-[11px] font-extrabold truncate text-on-surface">${evt.title}</div>
+                                ${sparkleIcon}
+                            </div>
+                            <div class="text-[9px] opacity-80 font-medium">${evt.timeLabel}</div>
+                        `;
                     }
-                    
-                    element.innerHTML = `
-                        <div class="flex justify-between items-start leading-none mb-1">
-                            <div class="text-[11px] font-extrabold truncate text-on-surface">${evt.title}</div>
-                            ${sparkleIcon}
-                        </div>
-                        <div class="text-[9px] opacity-80 font-medium">${evt.timeLabel}</div>
-                    `;
                     
                     calendarGrid.appendChild(element);
                 });
@@ -1522,6 +1612,88 @@
             renderTasksBoard();
             renderCalendar();
             showNotification("Task deleted.", "info");
+        }
+
+        // Dismiss the target task from next recommendation banner
+        function dismissTargetTask() {
+            const pendingTasks = getSortedTasks().filter(t => t.status !== 'done');
+            let criticalTask = null;
+            if (pendingTasks.length > 0) {
+                if (state.skippedTargetTaskId && pendingTasks[0].id === state.skippedTargetTaskId) {
+                    criticalTask = pendingTasks[1] || null;
+                } else {
+                    criticalTask = pendingTasks[0];
+                }
+            }
+            if (criticalTask) {
+                state.skippedTargetTaskId = criticalTask.id;
+                saveState();
+                renderDashboard();
+            }
+        }
+
+        // Apply a recommendation from the morning briefing card
+        function applyBriefingRecommendation(taskTitle, startHour, duration) {
+            let task = state.tasks.find(t => t.title === taskTitle && t.status !== 'done');
+            if (!task) {
+                task = {
+                    id: `task-rec-${Date.now()}`,
+                    title: taskTitle,
+                    category: "Finance",
+                    urgency: 8,
+                    impact: 8,
+                    effort: 3,
+                    dependencies: 1,
+                    status: "in_progress",
+                    dueDate: `Today, ${formatHour(startHour)}`,
+                    estimatedHours: duration,
+                    assignedTo: "Self",
+                    procrastinationCount: 0,
+                    isUnscheduled: false,
+                    scheduledTime: `${formatHour(startHour)} - ${formatHour(startHour + duration)}`
+                };
+                state.tasks.push(task);
+            } else {
+                task.isUnscheduled = false;
+                task.status = "in_progress";
+                task.dueDate = `Today, ${formatHour(startHour)}`;
+                task.scheduledTime = `${formatHour(startHour)} - ${formatHour(startHour + duration)}`;
+            }
+
+            // Create focus event
+            const newEvent = {
+                id: `evt-rec-${Date.now()}`,
+                title: `Focus: ${task.title}`,
+                type: "focus",
+                timeLabel: `${formatHour(startHour)} - ${formatHour(startHour + duration)}`,
+                startHour: startHour,
+                durationHours: duration,
+                day: "Mon",
+                colorClass: "bg-primary-container/20 border-primary/40 text-primary ai-sparkle-glow",
+                taskId: task.id
+            };
+            state.calendarEvents.push(newEvent);
+
+            // Create break event
+            const breakStart = startHour + duration;
+            const breakEvent = {
+                id: `evt-break-${Date.now()}`,
+                title: `Coffee Break / Buffer`,
+                type: "break",
+                timeLabel: `${formatHour(breakStart)} - ${formatHour(breakStart + 0.25)}`,
+                startHour: breakStart,
+                durationHours: 0.25,
+                day: "Mon",
+                colorClass: "bg-surface-container border border-dashed border-outline-variant text-on-surface-variant/75",
+                taskId: null
+            };
+            state.calendarEvents.push(breakEvent);
+
+            saveState();
+            renderDashboard();
+            renderCalendar();
+            showNotification(`Scheduled "${taskTitle}" and a break slot!`, "success");
+            speakAI(`Done! I've scheduled your review session for ${taskTitle} at ${formatHour(startHour)}, followed by a coffee break.`);
         }
 
         // --- CONFLICT MODAL CONTROLS ---

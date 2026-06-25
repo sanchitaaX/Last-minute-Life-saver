@@ -390,7 +390,9 @@ function autoScheduleAllTasks() {
     todayEvents.forEach(evt => {
         const start = evt.startHour;
         const duration = evt.durationHours;
-        for (let h = start; h < start + duration; h++) {
+        const startInt = Math.floor(start);
+        const endInt = Math.ceil(start + duration);
+        for (let h = startInt; h < endInt; h++) {
             occupiedHours.add(h);
         }
     });
@@ -454,11 +456,29 @@ function autoScheduleAllTasks() {
             };
             
             state.calendarEvents.push(newEvent);
+
+            // Inject 15-minute break/buffer (0.25h duration) immediately after
+            const breakStartHour = foundStartHour + taskDuration;
+            const breakDuration = 0.25;
+            const breakEvent = {
+                id: `evt-break-${Date.now()}-${scheduledCount}`,
+                title: `Coffee Break / Buffer`,
+                type: "break",
+                timeLabel: `${formatHour(breakStartHour)} - ${formatHour(breakStartHour + breakDuration)}`,
+                startHour: breakStartHour,
+                durationHours: breakDuration,
+                day: today,
+                colorClass: "bg-surface-container border border-dashed border-outline-variant text-on-surface-variant/75",
+                taskId: null
+            };
+            
+            state.calendarEvents.push(breakEvent);
             
             // Mark those hours as occupied
-            for (let h = foundStartHour; h < foundStartHour + taskDuration; h++) {
+            for (let h = foundStartHour; h < breakStartHour; h++) {
                 occupiedHours.add(h);
             }
+            occupiedHours.add(Math.floor(breakStartHour));
             
             scheduledCount++;
         }
@@ -466,19 +486,29 @@ function autoScheduleAllTasks() {
 
     if (scheduledCount > 0) {
         saveState();
-        showNotification(`AI Assistant scheduled ${scheduledCount} tasks into focus blocks!`, "success");
+        showNotification(`AI Assistant scheduled ${scheduledCount} tasks into focus blocks with breaks!`, "success");
         // Speak completion briefing
-        speakAI(`I have auto-scheduled ${scheduledCount} tasks into your open slots today, prioritizing your Q4 Revenue report and your investor deck polish.`);
+        speakAI(`I have auto-scheduled ${scheduledCount} tasks into your open slots today, prioritizing your Q4 Revenue report and your investor deck polish, with 15-minute buffer breaks.`);
     } else {
         showNotification("No available calendar gaps found for unscheduled tasks. Try resolving double bookings first.", "warning");
     }
 }
 
-// Convert 24h to 12h format
+// Convert 24h to 12h format (supporting fractional hours)
 function formatHour(h) {
-    if (h < 12) return `${h}:00 AM`;
-    if (h === 12) return `12:00 PM`;
-    return `${h - 12}:00 PM`;
+    const hours = Math.floor(h);
+    const minutes = Math.round((h - hours) * 60);
+    const mStr = minutes.toString().padStart(2, '0');
+    
+    if (hours < 12) {
+        const displayHour = hours === 0 ? 12 : hours;
+        return `${displayHour}:${mStr} AM`;
+    } else if (hours === 12) {
+        return `12:${mStr} PM`;
+    } else {
+        const displayHour = hours === 24 ? 12 : hours - 12;
+        return `${displayHour}:${mStr} PM`;
+    }
 }
 
 // --- VOICE ENABLED ASSISTANCE (Web Speech API) ---

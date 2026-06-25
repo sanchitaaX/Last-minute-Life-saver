@@ -12,3 +12,6 @@
 - `[x]` Implement procrastination reframing triggers with Speech Synthesis in app.js
 - `[x]` Implement recurring deadline auto-preparer templates in app.js
 - `[x]` Verify bento focus graphs and procrastination delegation actions in Analytics
+- `[x]` Add a dedicated "AI Target Next" Clear Action Banner to the Dashboard tab to surface the single most critical task dynamically
+- `[x]` Adjust the scheduling assistant to inject 15-minute breaks after each focus block
+- `[x]` Wire up Dashboard AI Suggestion Action clicks (e.g. apply recommendation)
