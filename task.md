@@ -8,3 +8,7 @@
 - `[x]` Verify Habit tracking, streaks, and failure check-in prompts
 - `[x]` Verify Autonomous task breakdown for high-level goals
 - `[x]` Verify email/calendar parsing from pasted subjects and bodies
+- `[x]` Create Weekly AI Review and Analytics view tab in index.html
+- `[x]` Implement procrastination reframing triggers with Speech Synthesis in app.js
+- `[x]` Implement recurring deadline auto-preparer templates in app.js
+- `[x]` Verify bento focus graphs and procrastination delegation actions in Analytics

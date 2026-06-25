@@ -56,8 +56,15 @@ To run and verify the MVP, open [index.html](file:///c:/Users/Admin/Documents/Pr
 - Click **"Extract & Schedule"**. The system parses the context, creates a structured task under the "Strategic" category, and flags it in your priorities.
 
 ### 🏆 7. Habits Streaks & Failure Detection
-- **What to check:** On the Dashboard or Goals tab, check a habit. The streak count increases, and the bento bogs completion matrix highlights the day.
+- **What to check:** On the Dashboard or Goals tab, check a habit. The streak count increases, and the bento box completion matrix highlights the day.
 - **Proactive Check-in:** To simulate a missed habit (e.g. failing to log Deep Work by its usual 11 AM time), click **"Simulate Proactive Check-in"** (next to Daily Habits on Dashboard).
 - **Proactive Recovery:** A slide-in reminder appears: 
   > *"You missed your usual 11 AM Deep Work habit. Recover streak with a low-effort 15m block?"* 
   Clicking **"Accept 15m"** launches a Pomodoro countdown overlay on the screen to help you take immediate action!
+
+### 📊 8. Analytics & Weekly AI Review
+- **Weekly AI Audit:** Navigate to the **Analytics** tab in the sidebar. You will see a detailed review of what tasks were completed, which slipped (e.g. Tax Filings), and the exact co-pilot adjustments made to protect focus hours.
+- **CSS Bento Charts:** Displays hourly peak focus hours (highlighting your 9 AM - 10 AM peak window) and focus category allocation.
+- **Procrastination Reframer:** Delayed tasks are listed under "Procrastination Reframing". Click **"Reframe"** to hear the co-pilot speak a customized motivation script (utilizing speech synthesis) and trigger a Pomodoro focus overlay. Or click **"Delegate"** to auto-reassign the task to a teammate (Sarah or JD) and update the boards.
+- **Auto-Prep Templates:** Under "Auto-Prep Templates", click **"Activate"** next to University Exam Prep, Corporate Tax Filing, or Monthly Rent Invoice. The AI Co-pilot immediately generates structured preparatory subtasks scheduled N days in advance in the task manager and calendar.
+
