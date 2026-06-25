@@ -89,6 +89,9 @@
 </head>
 <body class="bg-background text-on-surface select-none">
 
+    <!-- APP CONTAINER WRAPPER -->
+    <div id="app-container" class="hidden">
+
     <!-- LEFT SIDEBAR NAVIGATION -->
     <aside class="fixed left-0 top-0 h-screen w-[240px] bg-surface border-r border-outline-variant flex flex-col py-6 px-4 z-50">
         <div class="flex items-center gap-3 mb-10 px-2">
@@ -145,6 +148,10 @@
                 <a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-sm transition-colors rounded-lg" href="#" onclick="triggerMockContextReminder('idle')">
                     <span class="material-symbols-outlined text-sm">notifications_active</span>
                     <span>Test Phone Idle Alert</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-error text-sm transition-colors rounded-lg" href="#" onclick="resetOnboarding()">
+                    <span class="material-symbols-outlined text-sm text-error">logout</span>
+                    <span class="text-error font-bold">Reset Co-Pilot</span>
                 </a>
             </div>
         </div>
@@ -932,6 +939,65 @@
         </div>
     </div>
 
+    </div> <!-- /#app-container -->
+
+    <!-- ONBOARDING / SIGN-IN SCREEN -->
+    <div id="onboarding-screen" class="fixed inset-0 bg-background flex items-center justify-center z-[300] overflow-y-auto p-6 hidden">
+        <!-- Glowing animated bg blobs -->
+        <div class="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-tertiary/10 blur-[120px] pointer-events-none"></div>
+        
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-md relative z-10 border border-primary/20 bg-surface/50 text-center shadow-2xl space-y-6">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-14 h-14 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container shadow-xl shadow-primary-container/20">
+                    <span class="material-symbols-outlined text-3xl font-bold animate-bounce" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                </div>
+                <h2 class="font-display-md text-2xl font-extrabold text-on-surface">Welcome to Life Saver</h2>
+                <p class="text-xs text-on-surface-variant max-w-xs">Your proactive AI co-pilot that keeps you on top of deadlines and blocks procrastination before it starts.</p>
+            </div>
+            
+            <form id="onboarding-form" class="space-y-4 text-left">
+                <div class="space-y-1.5">
+                    <label for="ob-name" class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Your Name</label>
+                    <input id="ob-name" type="text" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2.5 px-4 text-xs text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Enter your name..." value="Aryan" required/>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label for="ob-peak-start" class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Peak Hours Start</label>
+                        <select id="ob-peak-start" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2.5 px-3 text-xs text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer">
+                            <option value="7">7:00 AM</option>
+                            <option value="8">8:00 AM</option>
+                            <option value="9" selected>9:00 AM</option>
+                            <option value="10">10:00 AM</option>
+                            <option value="11">11:00 AM</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label for="ob-peak-end" class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Peak Hours End</label>
+                        <select id="ob-peak-end" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2.5 px-3 text-xs text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer">
+                            <option value="11" selected>11:00 AM</option>
+                            <option value="12">12:00 PM</option>
+                            <option value="13">1:00 PM</option>
+                            <option value="14">2:00 PM</option>
+                            <option value="15">3:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="space-y-1.5">
+                    <label for="ob-focus" class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Today's Focus / Motto</label>
+                    <input id="ob-focus" type="text" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2.5 px-4 text-xs text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="e.g. Conquer tax filings & launch site" value="Conquer tax filings & build UI"/>
+                </div>
+                
+                <button type="submit" class="w-full py-3 bg-primary text-on-primary font-bold rounded-xl text-xs hover:brightness-110 active:scale-95 transition-all shadow-md shadow-primary-container/20 flex items-center justify-center gap-2 mt-6">
+                    <span>Initialize Co-Pilot</span>
+                    <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- CORE SCRIPTS -->
     <script src="app.js"></script>
     <script>
@@ -981,6 +1047,12 @@
 
         // --- DASHBOARD RENDERER ---
         function renderDashboard() {
+            // Update greeting header
+            const briefingTitle = document.getElementById("briefing-title");
+            if (briefingTitle) {
+                briefingTitle.innerText = `Good Morning, ${state.user.name || 'Aryan'}.`;
+            }
+
             // 1. AI Briefing Card populator
             const briefingList = document.getElementById("briefing-list");
             if (briefingList) {
@@ -991,7 +1063,7 @@
                 let briefingHTML = `
                     <li class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-primary mt-0.5">check_circle</span>
-                        <span>You have <span class="text-primary font-extrabold">${urgentCount} critical tasks</span> and <span class="text-primary font-extrabold">${conflicts} conflict</span> scheduled today, Aryan.</span>
+                        <span>You have <span class="text-primary font-extrabold">${urgentCount} critical tasks</span> and <span class="text-primary font-extrabold">${conflicts} conflict</span> scheduled today, ${state.user.name || 'Aryan'}.</span>
                     </li>
                 `;
                 
@@ -2012,8 +2084,61 @@
             voiceOverlay.classList.add("hidden");
         });
 
+        // --- ONBOARDING & SIGN-IN LOGIC ---
+        function checkOnboarding() {
+            const onboardingScreen = document.getElementById("onboarding-screen");
+            const appContainer = document.getElementById("app-container");
+            
+            if (state.user && state.user.onboarded) {
+                onboardingScreen.classList.add("hidden");
+                appContainer.classList.remove("hidden");
+            } else {
+                onboardingScreen.classList.remove("hidden");
+                appContainer.classList.add("hidden");
+            }
+        }
+        
+        function resetOnboarding() {
+            if (state.user) {
+                state.user.onboarded = false;
+            }
+            saveState();
+            checkOnboarding();
+            showNotification("Co-pilot session reset.", "info");
+        }
+
+        function submitOnboarding(name, peakStart, peakEnd, focus) {
+            state.user.name = name;
+            state.user.peakHoursStart = parseInt(peakStart);
+            state.user.peakHoursEnd = parseInt(peakEnd);
+            state.user.focusMotto = focus;
+            state.user.onboarded = true;
+            
+            saveState();
+            checkOnboarding();
+            
+            renderDashboard();
+            renderCalendar();
+            
+            showNotification("Co-pilot initialized! Welcome aboard.", "success");
+            speakAI(`Welcome ${name}. I have initialized your co-pilot according to your peak focus hours of ${peakStart} to ${peakEnd}. Let's conquer today's agenda.`);
+        }
+
+        const onboardingForm = document.getElementById("onboarding-form");
+        if (onboardingForm) {
+            onboardingForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const name = document.getElementById("ob-name").value;
+                const peakStart = document.getElementById("ob-peak-start").value;
+                const peakEnd = document.getElementById("ob-peak-end").value;
+                const focus = document.getElementById("ob-focus").value;
+                submitOnboarding(name, peakStart, peakEnd, focus);
+            });
+        }
+
         // --- ON INITIAL FILE LOADING ---
         window.addEventListener("DOMContentLoaded", () => {
+            checkOnboarding();
             renderDashboard();
             updateLiveConflictsUI();
         });

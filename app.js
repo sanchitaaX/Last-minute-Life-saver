@@ -6,7 +6,9 @@ let state = {
         name: "Aryan",
         peakHoursStart: 9, // 9 AM
         peakHoursEnd: 11,  // 11 AM
-        completionRateLastWeek: 70
+        completionRateLastWeek: 70,
+        onboarded: false,
+        focusMotto: ""
     },
     tasks: [],
     calendarEvents: [],
@@ -327,7 +329,9 @@ function loadState() {
             name: "Aryan",
             peakHoursStart: 9,
             peakHoursEnd: 11,
-            completionRateLastWeek: 70
+            completionRateLastWeek: 70,
+            onboarded: false,
+            focusMotto: ""
         };
         saveState();
     }
@@ -342,7 +346,9 @@ function seedEmptyState() {
         name: "Aryan",
         peakHoursStart: 9,
         peakHoursEnd: 11,
-        completionRateLastWeek: 70
+        completionRateLastWeek: 70,
+        onboarded: false,
+        focusMotto: ""
     };
 }
 
