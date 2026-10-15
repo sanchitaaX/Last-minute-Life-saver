@@ -835,14 +835,18 @@ function createReminderToast(title, message, actionText, intensity, actionCallba
     
     toast.className += ` ${borderClass}`;
 
-    toast.innerHTML = `
+function escapeHTML(str){return String(str).replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+      const safeTitle = escapeHTML(title);
+      const safeMessage = escapeHTML(message);
+      const safeAction = escapeHTML(actionText);
+      toast.innerHTML = `
         <div class="flex justify-between items-start mb-2">
-            <h4 class="text-body-md font-bold ${titleClass}">${title}</h4>
+            <h4 class="text-body-md font-bold ${titleClass}">${safeTitle}</h4>
             <button class="text-on-surface-variant hover:text-on-surface text-sm" onclick="this.parentElement.parentElement.remove()">✕</button>
         </div>
-        <p class="text-label-md text-on-surface-variant mb-4">${message}</p>
+          <p class="text-label-md text-on-surface-variant mb-4">${safeMessage}</p>
         <div class="flex gap-2">
-            <button id="toast-action-btn" class="flex-1 py-2 bg-primary-container text-on-primary-container text-label-sm font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all">${actionText}</button>
+            <button id="toast-action-btn" class="flex-1 py-2 bg-primary-container text-on-primary-container text-label-sm font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all">${safeAction}</button>
             <button class="px-3 py-2 bg-surface-container-highest text-on-surface-variant text-label-sm rounded-lg hover:text-on-surface transition-colors" onclick="this.parentElement.parentElement.remove()">Dismiss</button>
         </div>
     `;
@@ -861,6 +865,8 @@ let timerSeconds = 0;
 let timerTitle = "";
 
 function startPomodoroTimer(durationSeconds, title) {
+    function escapeHTML(str) { return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
+
     // Clear existing
     if (timerInterval) clearInterval(timerInterval);
     
@@ -876,7 +882,7 @@ function startPomodoroTimer(durationSeconds, title) {
             <div class="text-primary text-[14px] font-bold uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined animate-spin text-[18px]">timer</span> AI Focus Block
             </div>
-            <h3 class="font-display-md text-display-md text-on-surface mb-6">${title}</h3>
+            <h3 class="font-display-md text-display-md text-on-surface mb-6">${escapeHTML(title)}</h3>
             
             <div class="relative w-48 h-48 mx-auto mb-8">
                 <svg class="w-full h-full transform -rotate-90">
@@ -961,7 +967,8 @@ function addAIChatMessage(userText, botText) {
     
     const userContainer = document.createElement("div");
     userContainer.className = "flex justify-end";
-    userContainer.innerHTML = `
+      const escUser = escapeHTML(userText);
+      userContainer.innerHTML = `
         <div class="max-w-[80%] bg-primary-container text-on-primary-container p-4 rounded-2xl rounded-tr-none shadow-md">
             <p class="text-body-md">${userText}</p>
         </div>
@@ -971,7 +978,8 @@ function addAIChatMessage(userText, botText) {
     setTimeout(() => {
         const botContainer = document.createElement("div");
         botContainer.className = "flex justify-start";
-        botContainer.innerHTML = `
+        const escBot = escapeHTML(botText);
+      botContainer.innerHTML = `
             <div class="flex gap-4 max-w-[90%]">
                 <div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline flex-shrink-0 flex items-center justify-center">
                     <span class="material-symbols-outlined text-primary text-[18px]">smart_toy</span>
